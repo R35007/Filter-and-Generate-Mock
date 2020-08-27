@@ -1,86 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Filter and Generate Mock from har</title>
-</head>
-<script src="https://kit.fontawesome.com/1515315868.js" crossorigin="anonymous"></script>
-<!-- CSS only -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
-<link rel="stylesheet" href="style.css" />
+  </head>
+  <script src="https://kit.fontawesome.com/1515315868.js" crossorigin="anonymous"></script>
+  <!-- CSS only -->
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="style.css" />
 
-<body>
+  <body>
     <div class="container">
-        <h1 class="text-white text-center my-3">Filter and Generate Mock from HAR File</h1>
-        <div class="row bg-white p-5">
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="input-group">
-                            <input type="text" id="dataFileName" disabled class="form-control"
-                                placeholder="Browse the data file here" aria-label="Browse the data file here"
-                                aria-describedby="basic-addon2" />
-                            <div class="input-group-append">
-                                <label for="dataFile" class="btn btn-raised btn-primary m-0"> Browse <input type="file"
-                                        hidden id="dataFile" accept=".har,.json" /> </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mt-2"><textarea name="data" id="data" cols="30" rows="10"
-                            class="form-control"></textarea></div>
-                    <div class="col-12 mt-2">
-                        <div class="input-group">
-                            <input type="text" id="schemaFileName" disabled class="form-control"
-                                placeholder="Browse the schema file here" aria-label="Browse the schema file here"
-                                aria-describedby="basic-addon2" />
-                            <div class="input-group-append">
-                                <label for="schemaFile" class="btn btn-raised btn-primary m-0"> Browse <input
-                                        type="file" hidden id="schemaFile" accept=".har,.json" /> </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mt-2"><textarea name="schema" id="schema" cols="20" rows="10"
-                            class="form-control"></textarea></div>
+      <h1 class="text-white text-center my-3">Filter and Generate Mock</h1>
+      <div class="row bg-white p-5">
+        <div class="col-6">
+          <div class="row">
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="dataFileName"
+                  disabled
+                  class="form-control"
+                  placeholder="Browse the data file here"
+                  aria-label="Browse the data file here"
+                  aria-describedby="basic-addon2"
+                />
+                <div class="input-group-append">
+                  <label for="dataFile" class="btn btn-raised btn-primary m-0">
+                    Browse <input type="file" hidden id="dataFile" accept=".har,.json" />
+                  </label>
                 </div>
+              </div>
             </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-6">
-                        <a href="#" id="filterData" class="btn btn-raised btn-primary m-0 w-100"> Filter Data by
-                            Schema</a>
-                    </div>
-                    <div class="col-6">
-                        <a href="#" id="generateMock" class="btn btn-raised btn-primary m-0 w-100">Generate Mock From
-                            Data</a>
-                    </div>
-                    <div class="col-12 mt-2">
-                        <div class="position-relative">
-                            <a href="#" id="download" class="text-light position-absolute d-none">
-                                <i class="text-light fas fa-download"></i>
-                            </a>
-                            <textarea name="generatedData" id="generatedData" disabled cols="30" rows="10"
-                                class="form-control"></textarea>
-                        </div>
-                    </div>
+            <div class="col-12 mt-2"><textarea name="data" id="data" cols="30" rows="10" class="form-control"></textarea></div>
+            <div class="col-12 mt-2">
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="schemaFileName"
+                  disabled
+                  class="form-control"
+                  placeholder="Browse the schema file here"
+                  aria-label="Browse the schema file here"
+                  aria-describedby="basic-addon2"
+                />
+                <div class="input-group-append">
+                  <label for="schemaFile" class="btn btn-raised btn-primary m-0">
+                    Browse <input type="file" hidden id="schemaFile" accept=".har,.json" />
+                  </label>
                 </div>
+              </div>
             </div>
+            <div class="col-12 mt-2"><textarea name="schema" id="schema" cols="20" rows="10" class="form-control"></textarea></div>
+          </div>
         </div>
+        <div class="col-6">
+          <div class="row">
+            <div class="col-6">
+              <a href="#" id="filterData" class="btn btn-raised btn-primary m-0 w-100"> Filter Data by Schema</a>
+            </div>
+            <div class="col-6">
+              <a href="#" id="generateMock" class="btn btn-raised btn-primary m-0 w-100">Generate Mock From Data</a>
+            </div>
+            <div class="col-12 mt-2">
+              <div class="position-relative">
+                <a href="#" id="download" class="text-light position-absolute d-none">
+                  <i class="text-light fas fa-download"></i>
+                </a>
+                <textarea name="generatedData" id="generatedData" disabled cols="30" rows="10" class="form-control"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
-<!-- JS, Popper.js, and jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-</script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
-</script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
-</script>
+  </body>
+  <!-- JS, Popper.js, and jQuery -->
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+    crossorigin="anonymous"
+  ></script>
 
-<script src="script.js"></script>
-
+  <script src="script.js"></script>
 </html>
