@@ -1,47 +1,5 @@
 $(document).ready(function () {
 
-    const sample_data = {
-        log: {
-            "pages": [{
-                    "title": "https://example.com/comments?postId=2"
-                },
-                {
-                    "title": "https://example.com/comments?postId=2"
-                }
-            ],
-            entries: [{
-                "_priority": "VeryHigh",
-                "_resourceType": "document",
-                "cache": {},
-                "connection": "7505",
-                "pageref": "page_12",
-                "request": {
-                    "method": "GET",
-                    "url": "https://example.com/comments?postId=2",
-                    "httpVersion": "http/2.0",
-                    "queryString": [{
-                        "name": "postId",
-                        "value": "2"
-                    }]
-                },
-                "response": {
-                    "status": 200,
-                    "statusText": "",
-                    "httpVersion": "http/2.0",
-                    "headers": [{
-                        "name": "status",
-                        "value": "200"
-                    }],
-                    "content": {
-                        "size": 1534,
-                        "mimeType": "application/json",
-                        "text": `{"response":"This is a sample response"}`
-                    }
-                }
-            }]
-        }
-    }
-
     const sample_schema = {
         log: {
             entries: {
@@ -49,7 +7,8 @@ $(document).ready(function () {
                 request: {
                     method: true,
                     url: true,
-                    queryString: true
+                    queryString: true,
+                    postData: true
                 },
                 response: {
                     status: true,
@@ -61,7 +20,7 @@ $(document).ready(function () {
         }
     }
 
-    $("#data").val(JSON.stringify(sample_data, null, 2))
+    $("#data").val(JSON.stringify({}, null, 2))
     $("#schema").val(JSON.stringify(sample_schema, null, 2))
 
     const isPlainObject = (val) => {
