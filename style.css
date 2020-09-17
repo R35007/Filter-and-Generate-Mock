@@ -1,62 +1,111 @@
 :root {
-    --primary: #4f27b0 !important;
+  --primary: #4f27b0 !important;
 }
 
 * {
-    outline: none !important;
+  outline: none !important;
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #4e4d4d;
-    border-radius: 15px;
+  background: #4e4d4d;
+  border-radius: 15px;
 }
 
 ::-webkit-scrollbar-track {
-    background: black;
-    border-radius: 20px;
+  background: black;
+  border-radius: 20px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.flex-initial {
+  flex: initial;
 }
 
 body {
-    background: var(--primary)
+  background: var(--primary);
+}
+
+.container {
+  height: 100vh;
+  padding: 15px !important;
+  max-width: 1700px;
 }
 
 .btn.btn-raised.btn-primary {
-    color: #fff;
-    background-color: var(--primary) !important;
-    border-color: var(--primary) !important;
+  color: #fff;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
 }
 
 input {
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 a {
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 textarea {
-    background: black !important;
-    border: black !important;
-    color: gray !important;
-    box-shadow: none !important;
-    height: 210px !important;
-}
-
-textarea#generatedData {
-    height: 475px !important;
+  background: black !important;
+  border: black !important;
+  color: gray !important;
+  box-shadow: none !important;
+  height: 100% !important;
 }
 
 #download {
-    right: 0;
-    padding: 12px 10px;
-    opacity: 0.5;
-    cursor: pointer;
+  right: 0;
+  padding: 12px 10px;
+  opacity: 0.5;
+  cursor: pointer;
 }
 
 #download:hover {
-    opacity: 0.7;
+  opacity: 0.7;
+}
+
+/* Loader */
+.loader {
+  border: 9px solid #dadada;
+  border-radius: 50%;
+  border-top: 12px solid var(--primary);
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 0.8s linear infinite;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader-wrapper {
+  z-index: 10;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: #0000007d;
+  right: 0;
 }
