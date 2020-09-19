@@ -38,6 +38,11 @@ body {
   max-width: 1700px;
 }
 
+.heading a {
+  text-decoration: none !important;
+  color: white;
+}
+
 .btn.btn-raised.btn-primary {
   color: #fff;
   background-color: var(--primary) !important;

@@ -27,11 +27,12 @@ try {
     return false;
   };
 
-  transformHar = (harData = {}, resourceTypeFilters = [], callback) => {
+  const transformHar = (harData = {}, resourceTypeFilters = [], callback) => {
     try {
       const entries = harData?.log?.entries || [];
       const resourceFilteredEntries = resourceTypeFilters.length ? entries.filter((e) => resourceTypeFilters.indexOf(e._resourceType) >= 0) : entries;
-      const mock = resourceFilteredEntries.reduce((result, entry) => {
+      const mimeTypeFilteredEntries = resourceFilteredEntries.filter((e) => e?.response?.content?.mimeType === "application/json");
+      const mock = mimeTypeFilteredEntries.reduce((result, entry) => {
         const route = new URL(entry?.request?.url).pathname;
         const valid_Route = getValidRoute(route);
         const responseText = entry?.response?.content?.text || "";
@@ -60,11 +61,12 @@ try {
       return valid_Mock;
     } catch (err) {
       console.log(err);
+      hideLoader();
       alert(err);
     }
   };
 
-  filterBySchema = (data = {}, schema = {}) => {
+  const filterBySchema = (data = {}, schema = {}) => {
     if (isPlainObject(data)) {
       const filteredObj = Object.entries(data).reduce((result, [key, val]) => {
         const schemaKeys = Object.keys(schema);
@@ -91,6 +93,16 @@ try {
       return filteredArray.length ? filteredArray : [];
     }
     return data;
+  };
+
+  const showLoader = () => {
+    $("#loader-screen").removeClass("d-none");
+    $("#loader-screen").addClass("d-flex");
+  };
+
+  const hideLoader = () => {
+    $("#loader-screen").removeClass("d-flex");
+    $("#loader-screen").addClass("d-none");
   };
 
   $(document).ready(function () {
@@ -124,8 +136,7 @@ try {
         const result = JSON.parse(e.target.result);
         var formattedData = JSON.stringify(result, null, 2);
         $("#" + id).val(formattedData);
-        $("#loader-screen").removeClass("d-flex");
-        $("#loader-screen").addClass("d-none");
+        hideLoader();
       };
 
       fr.readAsText(file);
@@ -148,32 +159,71 @@ try {
     });
 
     $("#dataFile").on("change", function () {
-      $("#loader-screen").removeClass("d-none");
-      $("#loader-screen").addClass("d-flex");
       const filePath = $(this).val();
-      $("#dataFileName").val(filePath);
-      const file = document.getElementById("dataFile").files[0];
-      setFileData(file, "data");
+      if (!isEmpty(filePath)) {
+        showLoader();
+        $("#dataFileName").val(filePath);
+        const file = document.getElementById("dataFile").files[0];
+        setFileData(file, "data");
+      } else {
+        hideLoader();
+      }
     });
 
     $("#schemaFile").on("change", function () {
       const filePath = $(this).val();
-      $("#schemaFileName").val(filePath);
-      const file = document.getElementById("schemaFile").files[0];
-      setFileData(file, "schema");
+      if (!isEmpty(filePath)) {
+        showLoader();
+        $("#schemaFileName").val(filePath);
+        const file = document.getElementById("schemaFile").files[0];
+        setFileData(file, "schema");
+      } else {
+        hideLoader();
+      }
     });
 
     $("#filterData").on("click", () => {
-      const data = $("#data").val();
-      const schema = $("#schema").val();
-      const mock = filterBySchema(JSON.parse(data), JSON.parse(schema));
-      setDownloadData(mock);
+      const dataStr = $("#data").val();
+      const schemaStr = $("#schema").val();
+      showLoader();
+
+      setTimeout(() => {
+        try {
+          const data = JSON.parse(dataStr);
+          try {
+            const schema = JSON.parse(schemaStr);
+            const mock = filterBySchema(data, schema);
+            setDownloadData(mock);
+          } catch (err) {
+            console.error("Schema Error : ");
+            console.error(err);
+            hideLoader();
+            alert("Schema Error : \n" + err);
+          }
+        } catch (err) {
+          console.error("Data Error : ");
+          console.error(err);
+          hideLoader();
+          alert("Data Error : \n" + err);
+        }
+      }, 10);
     });
 
     $("#generateMock").on("click", () => {
-      const data = $("#data").val();
-      const mock = transformHar(JSON.parse(data), ["xhr", "document"]);
-      setDownloadData(mock);
+      const dataStr = $("#data").val();
+      showLoader();
+      setTimeout(() => {
+        try {
+          const data = JSON.parse(dataStr);
+          const mock = transformHar(data, ["xhr", "document"]);
+          setDownloadData(mock);
+        } catch (err) {
+          console.error("Data Error : ");
+          console.error(err);
+          hideLoader();
+          alert("Data Error : \n" + err);
+        }
+      }, 10);
     });
 
     const setDownloadData = (mock) => {
@@ -184,9 +234,11 @@ try {
       $("#download").attr("download", "mock.json");
       $("#download").removeClass("d-none");
       $("#download").addClass("d-inline-block");
+      hideLoader();
     };
   });
 } catch (err) {
-  console.log(err);
+  console.error(err);
+  hideLoader();
   alert(err);
 }
