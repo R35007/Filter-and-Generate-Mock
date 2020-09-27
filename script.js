@@ -1,3 +1,34 @@
+// #region Used by dragAndDrop.js
+var showLoader = () => {
+  $("#loader-screen").removeClass("d-none");
+  $("#loader-screen").addClass("d-flex");
+};
+
+var hideLoader = () => {
+  $("#loader-screen").removeClass("d-flex");
+  $("#loader-screen").addClass("d-none");
+};
+
+var setFileData = (file, id) => {
+  const fr = new FileReader();
+
+  fr.onload = (e) => {
+    try {
+      const result = JSON.parse(e.target.result);
+      var formattedData = JSON.stringify(result, null, 2);
+      $("#" + id).val(formattedData);
+      hideLoader();
+    } catch (err) {
+      console.error(err);
+      hideLoader();
+      alert(err);
+    }
+  };
+
+  fr.readAsText(file);
+};
+// #endregion
+
 try {
   const isFunction = (val) => {
     return typeof val === "function";
@@ -95,15 +126,41 @@ try {
     return data;
   };
 
-  const showLoader = () => {
-    $("#loader-screen").removeClass("d-none");
-    $("#loader-screen").addClass("d-flex");
+  const setDownloadData = (mock) => {
+    const formattedMock = JSON.stringify(mock, null, 2);
+    $("#generatedData").val(formattedMock);
+    const dataStr = "data:text/jso;charset=utf-8," + encodeURIComponent(formattedMock);
+    $("#download").attr("href", dataStr);
+    $("#download").attr("download", "mock.json");
+    $("#download").removeClass("d-none");
+    $("#download").addClass("d-inline-block");
+    hideLoader();
   };
 
-  const hideLoader = () => {
-    $("#loader-screen").removeClass("d-flex");
-    $("#loader-screen").addClass("d-none");
-  };
+  function onDataFileUploadHandler() {
+    const filePath = $(this).val();
+    if (!isEmpty(filePath)) {
+      showLoader();
+      $("#dataFileName").val(filePath);
+      const file = document.getElementById("dataFile").files[0];
+      console.log(file);
+      setFileData(file, "data");
+    } else {
+      hideLoader();
+    }
+  }
+
+  function onSchemaFileUploadHandler() {
+    const filePath = $(this).val();
+    if (!isEmpty(filePath)) {
+      showLoader();
+      $("#schemaFileName").val(filePath);
+      const file = document.getElementById("schemaFile").files[0];
+      setFileData(file, "schema");
+    } else {
+      hideLoader();
+    }
+  }
 
   $(document).ready(function () {
     const sample_schema = {
@@ -129,58 +186,9 @@ try {
     $("#data").val(JSON.stringify({}, null, 2));
     $("#schema").val(JSON.stringify(sample_schema, null, 2));
 
-    const setFileData = (file, id) => {
-      const fr = new FileReader();
+    $("#dataFile").on("change", onDataFileUploadHandler);
 
-      fr.onload = (e) => {
-        const result = JSON.parse(e.target.result);
-        var formattedData = JSON.stringify(result, null, 2);
-        $("#" + id).val(formattedData);
-        hideLoader();
-      };
-
-      fr.readAsText(file);
-    };
-
-    $(document).delegate("textarea", "keydown", function (e) {
-      var keyCode = e.keyCode || e.which;
-
-      if (keyCode == 9) {
-        e.preventDefault();
-        var start = selectionStart;
-        var end = selectionEnd;
-
-        // set textarea value to: text before caret + tab + text after caret
-        $(this).val($(this).val().substring(0, start) + "\t" + $(this).val().substring(end));
-
-        // put caret at right position again
-        selectionStart = selectionEnd = start + 1;
-      }
-    });
-
-    $("#dataFile").on("change", function () {
-      const filePath = $(this).val();
-      if (!isEmpty(filePath)) {
-        showLoader();
-        $("#dataFileName").val(filePath);
-        const file = document.getElementById("dataFile").files[0];
-        setFileData(file, "data");
-      } else {
-        hideLoader();
-      }
-    });
-
-    $("#schemaFile").on("change", function () {
-      const filePath = $(this).val();
-      if (!isEmpty(filePath)) {
-        showLoader();
-        $("#schemaFileName").val(filePath);
-        const file = document.getElementById("schemaFile").files[0];
-        setFileData(file, "schema");
-      } else {
-        hideLoader();
-      }
-    });
+    $("#schemaFile").on("change", onSchemaFileUploadHandler);
 
     $("#filterData").on("click", () => {
       const dataStr = $("#data").val();
@@ -225,17 +233,6 @@ try {
         }
       }, 10);
     });
-
-    const setDownloadData = (mock) => {
-      const formattedMock = JSON.stringify(mock, null, 2);
-      $("#generatedData").val(formattedMock);
-      const dataStr = "data:text/jso;charset=utf-8," + encodeURIComponent(formattedMock);
-      $("#download").attr("href", dataStr);
-      $("#download").attr("download", "mock.json");
-      $("#download").removeClass("d-none");
-      $("#download").addClass("d-inline-block");
-      hideLoader();
-    };
   });
 } catch (err) {
   console.error(err);

@@ -57,6 +57,10 @@ a {
   box-shadow: none !important;
 }
 
+.textarea-wrapper {
+  min-height: 252px;
+}
+
 textarea {
   background: black !important;
   border: black !important;
@@ -113,4 +117,26 @@ textarea {
   bottom: 0;
   background: #0000007d;
   right: 0;
+}
+
+/* Drop Area */
+.drop-area {
+  align-items: center;
+  justify-content: center;
+}
+
+.highlight.drop-area {
+  border: 2px dashed var(--primary);
+  background: #4f27b03d;
+}
+
+.highlight.drop-area textarea {
+  display: none;
+}
+
+.highlight.drop-area:after {
+  content: "Drop Here";
+  font-size: 3rem;
+  font-weight: 700;
+  opacity: 0.4;
 }
