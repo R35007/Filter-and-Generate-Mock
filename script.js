@@ -15,16 +15,16 @@ var setFileData = (file, id) => {
 
   fr.onload = (e) => {
     try {
-      data = JSON.parse(e.target.result);
-      const formattedData = JSON.stringify(data, null, 2);
-      const currentTab = $("#data-drop-area").children(".active.show").attr("id");
-
       isDataLoaded = false;
       isSchemaLoaded = false;
       isTextareaLoaded = false;
 
       data = {};
       schema = {};
+
+      data = JSON.parse(e.target.result);
+      const formattedData = JSON.stringify(data, null, 2);
+      const currentTab = $("#data-drop-area").children(".active.show").attr("id");
 
       if (currentTab === "data-JSON") {
         setData(data, "json");
