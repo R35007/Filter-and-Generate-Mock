@@ -1,4 +1,5 @@
 // #region Used by dragAndDrop.js
+
 var showLoader = () => {
   $("#loader-screen").removeClass("d-none");
   $("#loader-screen").addClass("d-flex");
@@ -14,9 +15,24 @@ var setFileData = (file, id) => {
 
   fr.onload = (e) => {
     try {
-      const result = JSON.parse(e.target.result);
-      var formattedData = JSON.stringify(result, null, 2);
-      $("#" + id).val(formattedData);
+      data = JSON.parse(e.target.result);
+      const formattedData = JSON.stringify(data, null, 2);
+      const currentTab = $("#data-drop-area").children(".active.show").attr("id");
+
+      isDataLoaded = false;
+      isSchemaLoaded = false;
+      isTextareaLoaded = false;
+
+      if (currentTab === "data-JSON") {
+        setData(data, "json");
+        isDataLoaded = true;
+      } else if (currentTab === "data-schema") {
+        setSchema(data);
+        isSchemaLoaded = true;
+      } else {
+        $("#" + id).val(formattedData);
+        isTextareaLoaded = true;
+      }
       hideLoader();
     } catch (err) {
       console.error(err);
@@ -30,34 +46,6 @@ var setFileData = (file, id) => {
 // #endregion
 
 try {
-  const isFunction = (val) => {
-    return typeof val === "function";
-  };
-
-  const isPlainObject = (val) => {
-    return typeof val === "object" && !Array.isArray(val);
-  };
-
-  const isArray = (val) => {
-    return Array.isArray(val);
-  };
-
-  const getValidRoute = (route) => {
-    if (typeof route === "object") return undefined;
-    const validRoute = `${route}`.startsWith("/") ? `${route}` : "/" + route;
-    return validRoute;
-  };
-
-  const isEmpty = (val) => {
-    if (typeof val === "string" && val.length === 0) return true;
-    if (val === null) return true;
-    if (val === undefined) return true;
-    if (typeof val === "object" && !Array.isArray(val) && Object.keys(val).length === 0) return true;
-    if (typeof val === "object" && Array.isArray(val) && val.length === 0) return true;
-
-    return false;
-  };
-
   const transformHar = (harData = {}, resourceTypeFilters = [], callback) => {
     try {
       const entries = harData?.log?.entries || [];
@@ -97,20 +85,21 @@ try {
     }
   };
 
-  const filterBySchema = (data = {}, schema = {}) => {
-    if (isPlainObject(data)) {
-      const filteredObj = Object.entries(data).reduce((result, [key, val]) => {
-        const schemaKeys = Object.keys(schema);
+  const filterBySchema = (_data = {}, _schema = {}) => {
+    if (isPlainObject(_data)) {
+      const filteredObj = Object.entries(_data).reduce((result, [key, val]) => {
+        const schemaKeys = Object.keys(_schema);
         if (schemaKeys.indexOf(key) >= 0) {
-          if (isPlainObject(schema[key])) {
-            if (isPlainObject(val)) {
-              return { ...result, [key]: filterBySchema(val, schema[key]) };
-            } else if (isArray(val)) {
-              return { ...result, [key]: filterBySchema(val, schema[key]) };
+          if (isPlainObject(_schema[key])) {
+            if (isPlainObject(val) || isArray(val)) {
+              const value = filterBySchema(val, _schema[key]);
+              if (!isEmpty(value)) {
+                return { ...result, [key]: value };
+              }
             } else {
               return result;
             }
-          } else if (schema[key] === true) {
+          } else if (_schema[key] === true) {
             return { ...result, [key]: val };
           }
           return result;
@@ -119,16 +108,17 @@ try {
       }, {});
 
       return filteredObj;
-    } else if (isArray(data)) {
-      const filteredArray = data.map((j) => filterBySchema(j, schema)).filter((fa) => !isEmpty(fa));
+    } else if (isArray(_data)) {
+      const filteredArray = _data.map((j) => filterBySchema(j, _schema)).filter((fa) => !isEmpty(fa));
       return filteredArray.length ? filteredArray : [];
     }
-    return data;
+    return _data;
   };
 
   const setDownloadData = (mock) => {
+    setData(mock, "mock");
     const formattedMock = JSON.stringify(mock, null, 2);
-    $("#generatedData").val(formattedMock);
+    $("#mockText").val(formattedMock);
     const dataStr = "data:text/jso;charset=utf-8," + encodeURIComponent(formattedMock);
     $("#download").attr("href", dataStr);
     $("#download").attr("download", "mock.json");
@@ -150,69 +140,24 @@ try {
     }
   }
 
-  function onSchemaFileUploadHandler() {
-    const filePath = $(this).val();
-    if (!isEmpty(filePath)) {
-      showLoader();
-      $("#schemaFileName").val(filePath);
-      const file = document.getElementById("schemaFile").files[0];
-      setFileData(file, "schema");
-    } else {
-      hideLoader();
-    }
-  }
-
   $(document).ready(function () {
-    const sample_schema = {
-      log: {
-        entries: {
-          _resourceType: true,
-          request: {
-            method: true,
-            url: true,
-            queryString: true,
-            postData: true,
-          },
-          response: {
-            status: true,
-            content: {
-              text: true,
-            },
-          },
-        },
-      },
-    };
-
     $("#data").val(JSON.stringify({}, null, 2));
-    $("#schema").val(JSON.stringify(sample_schema, null, 2));
 
     $("#dataFile").on("change", onDataFileUploadHandler);
 
-    $("#schemaFile").on("change", onSchemaFileUploadHandler);
-
     $("#filterData").on("click", () => {
-      const dataStr = $("#data").val();
-      const schemaStr = $("#schema").val();
       showLoader();
 
       setTimeout(() => {
         try {
-          const data = JSON.parse(dataStr);
-          try {
-            const schema = JSON.parse(schemaStr);
-            const mock = filterBySchema(data, schema);
-            setDownloadData(mock);
-          } catch (err) {
-            console.error("Schema Error : ");
-            console.error(err);
-            hideLoader();
-            alert("Schema Error : \n" + err);
-          }
+          const mock = filterBySchema(data, schema);
+          setDownloadData(mock);
+          hideLoader();
         } catch (err) {
-          console.error("Data Error : ");
+          console.error("Filter Error : ");
           console.error(err);
           hideLoader();
-          alert("Data Error : \n" + err);
+          alert("Filter Error : \n" + err);
         }
       }, 10);
     });
@@ -222,16 +167,62 @@ try {
       showLoader();
       setTimeout(() => {
         try {
-          const data = JSON.parse(dataStr);
           const mock = transformHar(data, ["xhr", "document"]);
           setDownloadData(mock);
         } catch (err) {
-          console.error("Data Error : ");
+          console.error("Generate Mock Error : ");
           console.error(err);
           hideLoader();
-          alert("Data Error : \n" + err);
+          alert("Generate Mock : \n" + err);
         }
       }, 10);
+    });
+
+    $("#data-Schema-tab").on("click", () => {
+      if (!isSchemaLoaded) {
+        showLoader();
+        setTimeout(() => {
+          setSchema(data);
+          hideLoader();
+          isSchemaLoaded = true;
+        }, 10);
+      }
+    });
+
+    $("#data-JSON-tab").on("click", () => {
+      if (!isDataLoaded) {
+        showLoader();
+        setTimeout(() => {
+          setData(data, "json");
+          hideLoader();
+          isDataLoaded = true;
+        }, 10);
+      }
+    });
+
+    $("#data-textarea-tab").on("click", () => {
+      console.log("setting Textarea");
+      if (!isTextareaLoaded) {
+        showLoader();
+        setTimeout(() => {
+          const formattedData = JSON.stringify(data, null, 2);
+          $("#data").val(formattedData);
+          hideLoader();
+        }, 10);
+        isTextareaLoaded = true;
+      }
+    });
+
+    $("#data").on("change", () => {
+      try {
+        schema = {};
+        data = {};
+        isDataLoaded = false;
+        isSchemaLoaded = false;
+        console.log("setting Data obj");
+        const dataStr = $("#data").val();
+        data = JSON.parse(dataStr);
+      } catch {}
     });
   });
 } catch (err) {

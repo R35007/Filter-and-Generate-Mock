@@ -17,76 +17,139 @@
   <body>
     <div class="container d-flex flex-column position-relative">
       <h1 class="text-white text-center mb-3 heading"><a href="https://github.com/R35007/Filter-and-Generate-Mock">Filter and Generate Mock</a></h1>
-      <div class="row bg-white p-3 py-4 m-0 flex-1 rounded">
+      <div class="row bg-white p-3 py-4 m-0 flex-1 rounded" style="height: calc(100% - 80px)">
         <div class="d-none loader-wrapper align-items-center justify-content-center position-absolute" id="loader-screen">
           <div class="loader"></div>
         </div>
-        <div class="col-6 d-flex flex-column">
-          <div class="col-12 flex-initial p-0">
-            <div class="input-group">
-              <input
-                type="text"
-                id="dataFileName"
-                disabled
-                class="form-control"
-                placeholder="Browse the data file here"
-                aria-label="Browse the data file here"
-                aria-describedby="basic-addon2"
-              />
-              <div class="input-group-append">
-                <label for="dataFile" class="btn btn-raised btn-primary m-0">
-                  Browse <input type="file" hidden id="dataFile" accept=".har,.json" />
-                </label>
+        <div class="col-6 h-100">
+          <div class="d-flex">
+            <div class="flex-1 mr-2 p-0">
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="dataFileName"
+                  disabled
+                  class="form-control"
+                  placeholder="Browse the data file here"
+                  aria-label="Browse the data file here"
+                  aria-describedby="basic-addon2"
+                />
+                <div class="input-group-append">
+                  <label for="dataFile" class="btn btn-raised btn-primary m-0">
+                    Browse <input type="file" hidden id="dataFile" accept=".har,.json" />
+                  </label>
+                </div>
               </div>
             </div>
+            <div>
+              <ul class="nav nav-pills" id="data-tab" role="tablist">
+                <li class="nav-item">
+                  <a
+                    class="btn btn-raised active"
+                    id="data-JSON-tab"
+                    data-toggle="pill"
+                    href="#data-JSON"
+                    role="tab"
+                    aria-controls="data-JSON"
+                    aria-selected="true"
+                    >JSON
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="btn btn-raised"
+                    id="data-Schema-tab"
+                    data-toggle="pill"
+                    href="#data-schema"
+                    role="tab"
+                    aria-controls="data-Schema"
+                    aria-selected="false"
+                    >Schema</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="btn btn-raised"
+                    id="data-textarea-tab"
+                    data-toggle="pill"
+                    href="#data-textarea"
+                    role="tab"
+                    aria-controls="data-textarea"
+                    aria-selected="false"
+                    >Textarea</a
+                  >
+                </li>
+              </ul>
+            </div>
           </div>
-          <div class="drop-area textarea-wrapper col-12 mt-2 flex-1 p-0 d-flex align-items-center justify-content-center" id="data-drop-area">
+          <div class="drop-area w-100 col-12 mt-2 flex-1 p-0 tab-content" id="data-drop-area" style="height: calc(100% - 47px)">
+            <div class="tab-pane fade show active w-100 h-100 p-3" id="data-JSON" role="tabpanel" aria-labelledby="data-JSON-tab">
+              <form id="json" class="collapsible-container w-100 h-100"></form>
+            </div>
+            <div class="tab-pane fade w-100 h-100 p-3" id="data-schema" role="tabpanel" aria-labelledby="data-Schema-tab">
+              <form id="schema" class="collapsible-container w-100 h-100"></form>
+            </div>
+            <div class="textarea-wrapper tab-pane w-100 h-100 fade" id="data-textarea" role="tabpanel" aria-labelledby="data-textarea-tab">
+              <textarea name="data" id="data" cols="30" rows="10" class="form-control w-100 h-100"></textarea>
+            </div>
+          </div>
+          <!-- <div class="drop-area textarea-wrapper col-12 mt-2 flex-1 p-0 d-flex align-items-center justify-content-center" id="data-drop-area">
             <textarea name="data" id="data" cols="30" rows="10" class="form-control"></textarea>
           </div>
-          <div class="col-12 mt-2 flex-initial p-0">
-            <div class="input-group">
-              <input
-                type="text"
-                id="schemaFileName"
-                disabled
-                class="form-control"
-                placeholder="Browse the schema file here"
-                aria-label="Browse the schema file here"
-                aria-describedby="basic-addon2"
-              />
-              <div class="input-group-append">
-                <label for="schemaFile" class="btn btn-raised btn-primary m-0">
-                  Browse <input type="file" hidden id="schemaFile" accept=".har,.json" />
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="textarea-wrapper col-12 mt-2 flex-1 p-0" id="schema-drop-area">
-            <textarea name="schema" id="schema" cols="20" rows="10" class="form-control"></textarea>
-          </div>
+          <div class="textarea-wrapper col-12 mt-2 flex-1 d-none" id="schema"></div> -->
         </div>
-        <div class="col-6 d-flex flex-column">
-          <div class="row flex-initial">
-            <div class="col-6">
+        <div class="col-6 h-100">
+          <div class="d-flex">
+            <div class="col">
               <a href="#" id="filterData" class="btn btn-raised btn-primary m-0 w-100"> Filter Data by Schema</a>
             </div>
-            <div class="col-6">
+            <div class="col">
               <a href="#" id="generateMock" class="btn btn-raised btn-primary m-0 w-100">Generate Mock From Data</a>
             </div>
+            <div class="col d-flex justify-content-end">
+              <ul class="nav nav-pills" id="mock-tab" role="tablist">
+                <li class="nav-item">
+                  <a
+                    class="btn btn-raised active"
+                    id="mock-JSON-tab"
+                    data-toggle="pill"
+                    href="#mock-JSON"
+                    role="tab"
+                    aria-controls="mock-JSON"
+                    aria-selected="true"
+                    >MOCK
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="btn btn-raised"
+                    id="mock-textarea-tab"
+                    data-toggle="pill"
+                    href="#mock-textarea"
+                    role="tab"
+                    aria-controls="mock-textarea"
+                    aria-selected="false"
+                    >Textarea</a
+                  >
+                </li>
+              </ul>
+            </div>
           </div>
-          <div class="col-12 mt-2 flex-1 p-0">
-            <div class="position-relative h-100">
-              <a href="#" id="download" class="text-light position-absolute d-none">
-                <i class="text-light fas fa-download"></i>
-              </a>
-              <textarea name="generatedData" id="generatedData" disabled cols="30" rows="10" class="form-control"></textarea>
+          <div class="col-12 w-100 mt-2 p-0 position-relative tab-content" style="height: calc(100% - 47px)">
+            <a href="#" id="download" class="text-light position-absolute d-none">
+              <i class="fas fa-download"></i>
+            </a>
+            <div class="tab-pane fade show active w-100 h-100 p-3" id="mock-JSON" role="tabpanel" aria-labelledby="mock-JSON-tab">
+              <form id="mock" class="collapsible-container w-100 h-100"></form>
+            </div>
+            <div class="textarea-wrapper tab-pane fade w-100 h-100" id="mock-textarea" role="tabpanel" aria-labelledby="mock-textarea-tab">
+              <textarea name="generatedData" id="mockText" disabled cols="30" rows="10" class="form-control"></textarea>
             </div>
           </div>
         </div>
       </div>
     </div>
   </body>
-  <!-- JS, Popper.js, and jQuery -->
   <script
     src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -103,6 +166,9 @@
     crossorigin="anonymous"
   ></script>
 
+  <script src="common.js"></script>
+  <script src="schema.js"></script>
+  <script src="data.js"></script>
   <script src="script.js"></script>
   <script src="dragAndDrop.js"></script>
 </html>

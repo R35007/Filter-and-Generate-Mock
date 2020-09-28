@@ -32,6 +32,10 @@ body {
   background: var(--primary);
 }
 
+label {
+  margin-bottom: 0;
+}
+
 .container {
   height: 100vh;
   padding: 15px !important;
@@ -72,8 +76,8 @@ textarea {
 #download {
   right: 0;
   padding: 12px 10px;
-  opacity: 0.5;
   cursor: pointer;
+  color: #7f7f7f !important;
 }
 
 #download:hover {
@@ -121,6 +125,7 @@ textarea {
 
 /* Drop Area */
 .drop-area {
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -130,7 +135,7 @@ textarea {
   background: #4f27b03d;
 }
 
-.highlight.drop-area textarea {
+.highlight.drop-area * {
   display: none;
 }
 
@@ -139,4 +144,69 @@ textarea {
   font-size: 3rem;
   font-weight: 700;
   opacity: 0.4;
+}
+
+.filter {
+  cursor: pointer;
+}
+
+/* Tab Styles */
+.btn.btn-raised.active {
+  background-color: var(--primary) !important;
+  color: white !important;
+}
+
+.tab-pane:not(.textarea-wrapper) {
+  box-shadow: 0px 0px 6px 0px black;
+}
+
+/* Collapsible Styles */
+
+.nested {
+  margin-left: 30px;
+}
+
+.handle {
+  background: none;
+  position: absolute;
+  left: -11px;
+}
+
+.handle:after {
+  content: "";
+  height: 0px;
+  width: 0px;
+  display: inline-block;
+  border-style: solid;
+  cursor: pointer;
+}
+
+.open:checked ~ .handle:after {
+  border-color: black transparent transparent transparent !important;
+  border-width: 6px 5px 0px 5px !important;
+}
+
+.open:not(:checked) ~ .handle:after {
+  border-color: transparent transparent transparent black !important;
+  border-width: 5px 0px 5px 6px !important;
+}
+
+.open:checked ~ .nested {
+  display: block !important;
+}
+
+.open:not(:checked) ~ .nested {
+  display: none !important;
+}
+
+.count {
+  font-size: 14px;
+  color: gray;
+  margin-left: 10px;
+}
+
+.collapsible-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-left: 10px;
 }
