@@ -46,11 +46,13 @@ var setFileData = (file, id) => {
 // #endregion
 
 try {
-  const transformHar = (harData = {}, resourceTypeFilters = [], callback) => {
+  const generateMock = (harData = {}, resourceTypeFilters = [], callback) => {
     try {
       const entries = harData?.log?.entries || [];
       const resourceFilteredEntries = resourceTypeFilters.length ? entries.filter((e) => resourceTypeFilters.indexOf(e._resourceType) >= 0) : entries;
-      const mimeTypeFilteredEntries = resourceFilteredEntries.filter((e) => e?.response?.content?.mimeType === "application/json");
+      const mimeTypeFilteredEntries = resourceFilteredEntries.filter(
+        (e) => e?.response?.content?.mimeType === "application/json" || e?.response?.content?.mimeType === "text/plain"
+      );
       const mock = mimeTypeFilteredEntries.reduce((result, entry) => {
         const route = new URL(entry?.request?.url).pathname;
         const valid_Route = getValidRoute(route);
@@ -167,7 +169,7 @@ try {
       showLoader();
       setTimeout(() => {
         try {
-          const mock = transformHar(data, ["xhr", "document"]);
+          const mock = generateMock(data, ["xhr", "document"]);
           setDownloadData(mock);
         } catch (err) {
           console.error("Generate Mock Error : ");
