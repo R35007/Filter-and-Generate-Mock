@@ -23,6 +23,9 @@ var setFileData = (file, id) => {
       isSchemaLoaded = false;
       isTextareaLoaded = false;
 
+      data = {};
+      schema = {};
+
       if (currentTab === "data-JSON") {
         setData(data, "json");
         isDataLoaded = true;
